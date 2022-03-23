@@ -30,6 +30,8 @@ export default function Events({ contracts, contractName, eventName, localProvid
         <br />
         {eventName === "EthToTokenSwap"
           ? " ⟠ -->🎈 Address | Trade | AmountIn | AmountOut"
+          : eventName === "Approval"
+          ? "🎈 Address | Spender | Amount"
           : eventName === "TokenToEthSwap"
           ? "🎈-->⟠ Address | Trade | AmountOut | AmountIn"
           : eventName === "LiquidityProvided"
@@ -40,18 +42,28 @@ export default function Events({ contracts, contractName, eventName, localProvid
         bordered
         dataSource={events}
         renderItem={item => {
-          return (
+          if (item.args[3 != null]) {
+            return (
             <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
               <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              {item.args[1].toString().indexOf("E") == -1 ? (
-                <TokenBalance balance={item.args[1]} provider={localProvider} />
-              ) : (
+                {item.args[1].toString().indexOf("E") == -1 ? (
+                  <TokenBalance balance={item.args[1]} provider={localProvider} />
+                ) : (
                 `${item.args[1].toString()}`
-              )}
+                )}
               <TokenBalance balance={item.args[2]} provider={localProvider} />
               <TokenBalance balance={item.args[3]} provider={localProvider} />
             </List.Item>
-          );
+            );
+          } else {
+            return (
+              <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
+                <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
+                <TokenBalance balance={item.args[2]} provider={localProvider} />
+              </List.Item>
+              );
+          }
         }}
       />
     </div>

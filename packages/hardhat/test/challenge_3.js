@@ -99,14 +99,16 @@ describe("🚩 Challenge 3: ⚖️ 🪙 Simple DEX", function () {
 
       describe("ethToToken()", function () {
         it("Should send 1 Ether to DEX in exchange for _ $BAL", async function () {
-          let tx1 = await dexContract.connect(deployer.signer).ethToToken({
-            value: ethers.utils.parseEther("1"),
-          });
+          let tx1 = await dexContract
+            .connect(deployer.signer)
+            .ethToToken({ value: ethers.utils.parseEther("1") });
           // TODO: SYNTAX - Figure out how to read eth balance of dex contract and to compare it against the eth sent in via this tx. Also figure out why/how to read the event that should be emitted with this too.
 
           expect(
-            await ethers.BigNumber.from(dexContract.address.balance)
-          ).to.equal(ethers.utils.parseEther("6"));
+            ethers.utils.formatEther(
+              await dexContract.connect(deployer.signer).getTokenReserve()
+            )
+          ).to.equal("4.168751042187760547");
 
           // await expect(tx1)
           //   .emit(dexContract, "EthToTokenSwap")
@@ -133,16 +135,16 @@ describe("🚩 Challenge 3: ⚖️ 🪙 Simple DEX", function () {
           //TODO: SYNTAX -  write an expect that takes into account the emitted event from tokenToETH.
         });
 
-        it("Should send less tokens after the first trade (tokenToEach() called)", async function () {
-          await dexContract
-            .connect(deployer.signer)
-            .tokenToEth(ethers.utils.parseEther("1"));
-          let tx1 = await dexContract
-            .connect(deployer.sign
-            .tokenToEth(ethers.utils.parseEther("1"));
+        // it("Should send less tokens after the first trade (tokenToEth() called)", async function () {
+        //   await dexContract
+        //     .connect(deployer.signer)
+        //     .tokenToEth(ethers.utils.parseEther("1"));
+        //   let tx1 = await dexContract
+        //     .connect(deployer.sign)
+        //     .tokenToEth(ethers.utils.parseEther("1"));
 
-          //TODO: SYNTAX - write an expect that takes into account the emitted event from tokenToETH.
-        });
+        //   //TODO: SYNTAX - write an expect that takes into account the emitted event from tokenToETH.
+        // });
       });
 
       describe("deposit", async () => {
